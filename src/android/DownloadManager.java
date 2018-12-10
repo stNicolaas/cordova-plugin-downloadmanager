@@ -3,20 +3,15 @@ package downloadmanager;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Environment;
-
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CallbackContext;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import android.database.Cursor;
 
-/**
- * This class echoes a string called from JavaScript.
- */
 public class DownloadManager extends CordovaPlugin {
 
   @Override
@@ -26,7 +21,28 @@ public class DownloadManager extends CordovaPlugin {
       this.startDownload(message, callbackContext);
       return true;
     }
+    if (action.equals("status")) {
+      long reference = Long.parseLong(args.getString(0));
+      this.status(reference, callbackContext);
+      return true;
+    }
     return false;
+  }
+
+  private void status(long reference, CallbackContext callbackContext) {
+    android.app.DownloadManager downloadManager = (android.app.DownloadManager) cordova.getActivity().getApplicationContext().getSystemService(Context.DOWNLOAD_SERVICE);
+    android.app.DownloadManager.Query query = new android.app.DownloadManager.Query();
+    query.setFilterById(reference);
+    Cursor cursor = downloadManager.query(query);
+    if (cursor.moveToFirst()) {
+      int columnIndex = cursor.getColumnIndex(android.app.DownloadManager.COLUMN_STATUS);
+      int status = cursor.getInt(columnIndex);
+      if (status == android.app.DownloadManager.STATUS_RUNNING){
+        callbackContext.success("DOWNLOADING");
+      } else {
+        callbackContext.success("NOT DOWNLOADING");
+      }
+    }
   }
 
   private void startDownload(String message, CallbackContext callbackContext) {
@@ -37,23 +53,17 @@ public class DownloadManager extends CordovaPlugin {
       } catch (UnsupportedEncodingException e) {
         callbackContext.error("Error in converting filename");
       }
-      android.app.DownloadManager downloadManager = (android.app.DownloadManager) cordova.getActivity().getApplicationContext().getSystemService(Context.DOWNLOAD_SERVICE);            
+      android.app.DownloadManager downloadManager = (android.app.DownloadManager) cordova.getActivity().getApplicationContext().getSystemService(Context.DOWNLOAD_SERVICE);
       Uri Download_Uri = Uri.parse(message);
       android.app.DownloadManager.Request request = new android.app.DownloadManager.Request(Download_Uri);
-      //Restrict the types of networks over which this download may proceed.
       request.setAllowedNetworkTypes(android.app.DownloadManager.Request.NETWORK_WIFI | android.app.DownloadManager.Request.NETWORK_MOBILE);
-      //Set whether this download may proceed over a roaming connection.
       request.setAllowedOverRoaming(false);
-      //Set the title of this download, to be displayed in notifications (if enabled).
       request.setTitle(filename);
-      //Set a description of this download, to be displayed in notifications (if enabled)
       request.setDescription(filename);
-      //Set the local destination for the downloaded file to a path within the application's external files directory
       request.setDestinationInExternalFilesDir(cordova.getActivity().getApplicationContext(), "", filename);
-      //Set visiblity after download is complete
-      request.setNotificationVisibility(android.app.DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+      request.setNotificationVisibility(android.app.DownloadManager.Request.VISIBILITY_HIDDEN);
       long downloadReference = downloadManager.enqueue(request);
-      callbackContext.success(message);
+      callbackContext.success(Long.toString(downloadReference));
     } else {
       callbackContext.error("Expected one non-empty string argument.");
     }
