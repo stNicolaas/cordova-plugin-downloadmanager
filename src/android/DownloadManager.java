@@ -18,7 +18,8 @@ public class DownloadManager extends CordovaPlugin {
   public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
     if (action.equals("download")) {
       String message = args.getString(0);
-      this.startDownload(message, callbackContext);
+      String title = args.getString(1);
+      this.startDownload(message,title, callbackContext);
       return true;
     }
     if (action.equals("status")) {
@@ -45,7 +46,7 @@ public class DownloadManager extends CordovaPlugin {
     }
   }
 
-  private void startDownload(String message, CallbackContext callbackContext) {
+  private void startDownload(String message, String title, CallbackContext callbackContext) {
     if (message != null && message.length() > 0) {
       String filename = message.substring(message.lastIndexOf("/")+1, message.length());
       try {
@@ -58,8 +59,8 @@ public class DownloadManager extends CordovaPlugin {
       android.app.DownloadManager.Request request = new android.app.DownloadManager.Request(Download_Uri);
       request.setAllowedNetworkTypes(android.app.DownloadManager.Request.NETWORK_WIFI | android.app.DownloadManager.Request.NETWORK_MOBILE);
       request.setAllowedOverRoaming(false);
-      request.setTitle(filename);
-      request.setDescription(filename);
+      request.setTitle(title);
+      request.setDescription(title);
       request.setDestinationInExternalFilesDir(cordova.getActivity().getApplicationContext(), "", filename);
       request.setNotificationVisibility(android.app.DownloadManager.Request.VISIBILITY_VISIBLE); //VISIBILITY_HIDDEN
       long downloadReference = downloadManager.enqueue(request);
