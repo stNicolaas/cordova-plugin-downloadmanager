@@ -63,7 +63,8 @@ public class DownloadManager extends CordovaPlugin {
       request.setTitle(filename);
       request.setDescription(filename);
       request.setDestinationInExternalFilesDir(cordova.getActivity().getApplicationContext(), "", filename);
-      request.setNotificationVisibility(android.app.DownloadManager.Request.VISIBILITY_VISIBLE); //VISIBILITY_HIDDEN
+      request.setNotificationVisibility(android.app.DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED); 
+      // VISIBILITY_VISIBLE | VISIBILITY_HIDDEN | VISIBILITY_VISIBLE_NOTIFY_COMPLETED
       long downloadReference = downloadManager.enqueue(request);
       callbackContext.success(Long.toString(downloadReference));
     } else {
