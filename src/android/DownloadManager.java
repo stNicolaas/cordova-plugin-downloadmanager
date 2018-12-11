@@ -42,6 +42,8 @@ public class DownloadManager extends CordovaPlugin {
       } else {
         callbackContext.success("NOT DOWNLOADING");
       }
+    }else{
+      callbackContext.success("NOT DOWNLOADING");
     }
   }
 
