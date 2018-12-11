@@ -40,10 +40,10 @@ public class DownloadManager extends CordovaPlugin {
       if (status == android.app.DownloadManager.STATUS_RUNNING){
         callbackContext.success("DOWNLOADING");
       } else {
-        callbackContext.success("NOT DOWNLOADING");
+        callbackContext.success("NOT DOWNLOADING: " + Integer.toString(status));
       }
     }else{
-      callbackContext.success("NOT DOWNLOADING");
+      callbackContext.success("NOT DOWNLOADING: NOT FOUND");
     }
   }
 
