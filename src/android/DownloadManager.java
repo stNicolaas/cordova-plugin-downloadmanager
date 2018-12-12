@@ -66,7 +66,7 @@ public class DownloadManager extends CordovaPlugin {
 
   private void test(CallbackContext callbackContext) {
     try{
-      Context context = this.cordova.getActivity().getApplicationContext();
+      Context context = cordova.getActivity().getApplicationContext();
       String[] array = this.getExtSdCardDataPaths(callbackContext, context);
       callbackContext.success(String.join(",", array));
     }catch(Exception e){
