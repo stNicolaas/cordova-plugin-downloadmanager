@@ -62,15 +62,30 @@ public class DownloadManager extends CordovaPlugin {
   }
 
   private void test(CallbackContext callbackContext) {
-    File[] files = cordova.getActivity().getApplicationContext().getExternalFilesDirs();
-    String[] names = new String[files.length];
-    for (int i = 0; i < files.length; i++) {
-       names[i] = files[i].getName();
-    }
-    callbackContext.success(names.toString());
+    String[] array = this.getExtSdCardDataPaths(this.cordova.getActivity().getApplicationContext());
+    callbackContext.success(String.join(",", array));
   }
 
-  
+  private String[] getExtSdCardDataPaths(Context context) {
+      List<String> paths = new ArrayList<String>();
+      for (File file : context.getExternalFilesDirs("external")) {
+          if (file != null) {
+              int index = file.getAbsolutePath().lastIndexOf("/Android/data");
+              if (index >= 0) {
+                  String path = file.getAbsolutePath().substring(0, index);
+                  try {
+                      path = new File(path).getCanonicalPath();
+                  } catch (IOException e) {
+                      // Keep non-canonical path.
+                  }
+                  paths.add(path);
+              }
+          }
+      }
+      if (paths.isEmpty()) paths.add("/storage/sdcard1");
+      return paths.toArray(new String[0]);
+  }
+
   private void startDownload(String message, CallbackContext callbackContext) {
     if (message != null && message.length() > 0) {
       String filename = message.substring(message.lastIndexOf("/")+1, message.length());
