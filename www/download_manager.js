@@ -12,6 +12,6 @@ exports.storage_available = function(arg0, success, error) {
     exec(success, error, "DownloadManager", "storage_available", [arg0]);
 };
 
-exports.test = function(arg0, success, error) {
-    exec(success, error, "DownloadManager", "test", [arg0]);
+exports.foobar = function(arg0, success, error) {
+    exec(success, error, "DownloadManager", "foobar", [arg0]);
 };

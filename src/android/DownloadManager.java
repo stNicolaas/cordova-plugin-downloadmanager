@@ -39,8 +39,8 @@ public class DownloadManager extends CordovaPlugin {
       }
       return true;
     }
-    if (action.equals("test")) {
-      this.test(callbackContext);
+    if (action.equals("foobar")) {
+      this.foobar(callbackContext);
       return true;
     }
     return false;
@@ -64,7 +64,7 @@ public class DownloadManager extends CordovaPlugin {
     }
   }
 
-  private void test(CallbackContext callbackContext) {
+  private void foobar(CallbackContext callbackContext) {
     try{
       Context context = cordova.getActivity().getApplicationContext();
       String[] array = this.getExtSdCardDataPaths(callbackContext, context);
