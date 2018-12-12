@@ -65,33 +65,38 @@ public class DownloadManager extends CordovaPlugin {
   }
 
   private void test(CallbackContext callbackContext) {
-    Context context = this.cordova.getActivity().getApplicationContext()
+    Context context = this.cordova.getActivity().getApplicationContext();
     String[] array = this.getExtSdCardDataPaths(callbackContext, context);
     callbackContext.success(String.join(",", array));
   }
 
   private String[] getExtSdCardDataPaths(CallbackContext callbackContext, Context context) {
-    List<String> paths = new ArrayList<String>();
-    for (File file : context.getExternalFilesDirs("external")) {
-      if (file != null) {
-        int index = file.getAbsolutePath().lastIndexOf("/Android/data");
-        if (index >= 0) {
-          String path = file.getAbsolutePath().substring(0, index);
-          try {
-            path = new File(path).getCanonicalPath();
-          } catch (IOException e) {
-            callbackContext.error(e.getMessage());
+    try{
+      List<String> paths = new ArrayList<String>();
+      for (File file : context.getExternalFilesDirs("external")) {
+        if (file != null) {
+          int index = file.getAbsolutePath().lastIndexOf("/Android/data");
+          if (index >= 0) {
+            String path = file.getAbsolutePath().substring(0, index);
+            try {
+              path = new File(path).getCanonicalPath();
+            } catch (IOException e) {
+              callbackContext.error(e.getMessage());
+            }
+            paths.add(path);
+          }else{
+            callbackContext.error("index >= 0");
           }
-          paths.add(path);
         }else{
-          callbackContext.error("index >= 0");
+          callbackContext.error("file == null");
         }
-      }else{
-        callbackContext.error("file == null");
       }
+      if (paths.isEmpty()){paths.add("/storage/sdcard1")};
+      return paths.toArray(new String[0]);
+    }catch (Exception e){
+      callbackContext.error(e.getMessage());
+      return new String[1];
     }
-    if (paths.isEmpty()){paths.add("/storage/sdcard1")};
-    return paths.toArray(new String[0]);
   }
 
   private void startDownload(String message, CallbackContext callbackContext) {
