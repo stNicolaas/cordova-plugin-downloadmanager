@@ -26,6 +26,15 @@ public class DownloadManager extends CordovaPlugin {
       this.status(reference, callbackContext);
       return true;
     }
+    if (action.equals("storage_available")) {
+      boolean available = this.isExternalStorageAvailable();
+      if (available){
+        callbackContext.success("kwaai");
+      } else {
+        callbackContext.error("vok");
+      }
+      return true;
+    }
     return false;
   }
 
@@ -69,6 +78,25 @@ public class DownloadManager extends CordovaPlugin {
       callbackContext.success(Long.toString(downloadReference));
     } else {
       callbackContext.error("Expected one non-empty string argument.");
+    }
+  }
+  
+  private boolean isExternalStorageAvailable() {
+    String state = Environment.getExternalStorageState();
+    boolean mExternalStorageAvailable = false;
+    boolean mExternalStorageWriteable = false;
+    if (Environment.MEDIA_MOUNTED.equals(state)) {
+      mExternalStorageAvailable = mExternalStorageWriteable = true;
+    } else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+      mExternalStorageAvailable = true;
+      mExternalStorageWriteable = false;
+    } else {
+      mExternalStorageAvailable = mExternalStorageWriteable = false;
+    }
+    if (mExternalStorageAvailable == true && mExternalStorageWriteable == true) {
+      return true;
+    } else {
+      return false;
     }
   }
 }
