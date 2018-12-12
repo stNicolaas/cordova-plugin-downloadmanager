@@ -61,12 +61,12 @@ public class DownloadManager extends CordovaPlugin {
   }
 
   private void test(CallbackContext callbackContext) {
-    File[] files = cordova.getActivity().getApplicationContext().getExternalFilesDirs()
+    File[] files = cordova.getActivity().getApplicationContext().getExternalFilesDirs();
     String[] names = new String[files.length];
     for (int i = 0; i < files.length; i++) {
        names[i] = files[i].getName();
     }
-    callbackContext.success(names.toString())
+    callbackContext.success(names.toString());
   }
 
   
