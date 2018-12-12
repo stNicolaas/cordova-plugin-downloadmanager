@@ -65,7 +65,8 @@ public class DownloadManager extends CordovaPlugin {
   }
 
   private void test(CallbackContext callbackContext) {
-    String[] array = this.getExtSdCardDataPaths(callbackContext, this.cordova.getActivity().getApplicationContext());
+    Context context = this.cordova.getActivity().getApplicationContext()
+    String[] array = this.getExtSdCardDataPaths(callbackContext, context);
     callbackContext.success(String.join(",", array));
   }
 
@@ -89,7 +90,7 @@ public class DownloadManager extends CordovaPlugin {
         callbackContext.error("file == null");
       }
     }
-    if (paths.isEmpty()) paths.add("/storage/sdcard1");
+    if (paths.isEmpty()){paths.add("/storage/sdcard1")};
     return paths.toArray(new String[0]);
   }
 
