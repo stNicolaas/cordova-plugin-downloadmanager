@@ -80,7 +80,6 @@ public class DownloadManager extends CordovaPlugin {
             path = new File(path).getCanonicalPath();
           } catch (IOException e) {
             callbackContext.error(e.getMessage());
-            context
           }
           paths.add(path);
         }else{
