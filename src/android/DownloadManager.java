@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import android.database.Cursor;
+import java.io.File;
 
 public class DownloadManager extends CordovaPlugin {
 
