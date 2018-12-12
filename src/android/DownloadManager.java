@@ -35,6 +35,10 @@ public class DownloadManager extends CordovaPlugin {
       }
       return true;
     }
+    if (action.equals("test")) {
+      this.test(callbackContext);
+      return true;
+    }
     return false;
   }
 
@@ -56,6 +60,16 @@ public class DownloadManager extends CordovaPlugin {
     }
   }
 
+  private void test(CallbackContext callbackContext) {
+    File[] files = cordova.getActivity().getApplicationContext().getExternalFilesDirs()
+    String[] names = new String[files.length];
+    for (int i = 0; i < files.length; i++) {
+       names[i] = files[i].getName();
+    }
+    callbackContext.success(names.toString())
+  }
+
+  
   private void startDownload(String message, CallbackContext callbackContext) {
     if (message != null && message.length() > 0) {
       String filename = message.substring(message.lastIndexOf("/")+1, message.length());
