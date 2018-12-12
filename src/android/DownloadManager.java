@@ -41,7 +41,7 @@ public class DownloadManager extends CordovaPlugin {
     }
     if (action.equals("foobar")) {
       this.foobar(callbackContext);
-      callbackContext.error('SC');
+      callbackContext.error("SC");
       return true;
     }
     return false;
