@@ -91,7 +91,7 @@ public class DownloadManager extends CordovaPlugin {
           callbackContext.error("file == null");
         }
       }
-      if (paths.isEmpty()){paths.add("/storage/sdcard1")};
+      if (paths.isEmpty()){paths.add("/storage/sdcard1");}
       return paths.toArray(new String[0]);
     }catch (Exception e){
       callbackContext.error(e.getMessage());
