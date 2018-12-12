@@ -14,6 +14,7 @@ import android.database.Cursor;
 import java.io.File;
 import java.util.ArrayList;
 import java.io.IOException;
+import java.util.List;
 
 public class DownloadManager extends CordovaPlugin {
 
