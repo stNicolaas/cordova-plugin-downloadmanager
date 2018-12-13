@@ -63,7 +63,7 @@ public class DownloadManager extends CordovaPlugin {
         request.setAllowedOverRoaming(false);
         request.setTitle(title);
         // request.setDescription(title);
-        request.setDestinationUri(destination_url);
+        request.setDestinationUri(Uri.parse(destination_url));
         // Environment.getExternalStoragePublicDirectory()
         // request.setDestinationInExternalFilesDir(cordova.getActivity().getApplicationContext(), null, destination_url);
         request.setNotificationVisibility(android.app.DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED); 
