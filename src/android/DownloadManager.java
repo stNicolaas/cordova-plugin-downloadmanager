@@ -21,27 +21,15 @@ public class DownloadManager extends CordovaPlugin {
   @Override
   public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
     if (action.equals("download")) {
-      String message = args.getString(0);
-      this.startDownload(message, callbackContext);
+      String title = args.getString(0);
+      String download_url = args.getString(1);
+      String destination_url = args.getString(2);
+      this.startDownload(title, download_url, destination_url, callbackContext);
       return true;
     }
     if (action.equals("status")) {
       long reference = Long.parseLong(args.getString(0));
       this.status(reference, callbackContext);
-      return true;
-    }
-    if (action.equals("storage_available")) {
-      boolean available = this.isExternalStorageAvailable();
-      if (available){
-        callbackContext.success("kwaai");
-      } else {
-        callbackContext.error("vok");
-      }
-      return true;
-    }
-    if (action.equals("foobar")) {
-      this.foobar(callbackContext);
-      callbackContext.error("SC");
       return true;
     }
     return false;
@@ -65,61 +53,17 @@ public class DownloadManager extends CordovaPlugin {
     }
   }
 
-  private void foobar(CallbackContext callbackContext) {
-    try{
-      Context context = cordova.getActivity().getApplicationContext();
-      String[] array = this.getExtSdCardDataPaths(callbackContext, context);
-      callbackContext.success("POES");
-    }catch(Exception e){
-      callbackContext.error(e.getMessage());
-    }
-  }
-
-  private String[] getExtSdCardDataPaths(CallbackContext callbackContext, Context context) {
-    try{
-      List<String> paths = new ArrayList<String>();
-      for (File file : context.getExternalFilesDirs("external")) {
-        if (file != null) {
-          int index = file.getAbsolutePath().lastIndexOf("/Android/data");
-          if (index >= 0) {
-            String path = file.getAbsolutePath().substring(0, index);
-            try {
-              path = new File(path).getCanonicalPath();
-            } catch (IOException e) {
-              callbackContext.error(e.getMessage());
-            }
-            paths.add(path);
-          }else{
-            callbackContext.error("index >= 0");
-          }
-        }else{
-          callbackContext.error("file == null");
-        }
-      }
-      if (paths.isEmpty()){paths.add("/storage/sdcard1");}
-      return paths.toArray(new String[0]);
-    }catch (Exception e){
-      callbackContext.error(e.getMessage());
-      return new String[1];
-    }
-  }
-
-  private void startDownload(String message, CallbackContext callbackContext) {
-    if (message != null && message.length() > 0) {
-      String filename = message.substring(message.lastIndexOf("/")+1, message.length());
-      try {
-        filename = URLDecoder.decode(filename,"UTF-8");
-      } catch (UnsupportedEncodingException e) {
-        callbackContext.error("Error in converting filename");
-      }
+  private void startDownload(String title, String download_url, String destination_url, CallbackContext callbackContext) {
+    if (download_url != null && download_url.length() > 0) {
       android.app.DownloadManager downloadManager = (android.app.DownloadManager) cordova.getActivity().getApplicationContext().getSystemService(Context.DOWNLOAD_SERVICE);
-      Uri Download_Uri = Uri.parse(message);
-      android.app.DownloadManager.Request request = new android.app.DownloadManager.Request(Download_Uri);
+      Uri uri = Uri.parse(download_url);
+      android.app.DownloadManager.Request request = new android.app.DownloadManager.Request(uri);
       request.setAllowedNetworkTypes(android.app.DownloadManager.Request.NETWORK_WIFI | android.app.DownloadManager.Request.NETWORK_MOBILE);
       request.setAllowedOverRoaming(false);
-      request.setTitle(filename);
-      request.setDescription(filename);
-      request.setDestinationInExternalFilesDir(cordova.getActivity().getApplicationContext(), "", filename);
+      request.setTitle(title);
+      request.setDescription(title);
+      request.setDestinationUri(Download_Uri);
+      request.setDestinationInExternalFilesDir(cordova.getActivity().getApplicationContext(), "", destination_url);
       request.setNotificationVisibility(android.app.DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED); 
       // VISIBILITY_VISIBLE | VISIBILITY_HIDDEN | VISIBILITY_VISIBLE_NOTIFY_COMPLETED
       long downloadReference = downloadManager.enqueue(request);
