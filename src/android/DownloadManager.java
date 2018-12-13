@@ -24,7 +24,8 @@ public class DownloadManager extends CordovaPlugin {
       String title = args.getString(0);
       String download_url = args.getString(1);
       String destination_url = args.getString(2);
-      this.startDownload(title, download_url, destination_url, callbackContext);
+      String filename = args.getString(3);
+      this.startDownload(title, download_url, destination_url, filename, callbackContext);
       return true;
     }
     if (action.equals("status")) {
@@ -53,7 +54,7 @@ public class DownloadManager extends CordovaPlugin {
     }
   }
 
-  private void startDownload(String title, String download_url, String destination_url, CallbackContext callbackContext) {
+  private void startDownload(String title, String download_url, String destination_url, String filename, CallbackContext callbackContext) {
     if (download_url != null && download_url.length() > 0) {
       android.app.DownloadManager downloadManager = (android.app.DownloadManager) cordova.getActivity().getApplicationContext().getSystemService(Context.DOWNLOAD_SERVICE);
       Uri uri = Uri.parse(download_url);
@@ -63,7 +64,7 @@ public class DownloadManager extends CordovaPlugin {
       request.setTitle(title);
       request.setDescription(title);
       request.setDestinationUri(uri);
-      request.setDestinationInExternalFilesDir(cordova.getActivity().getApplicationContext(), "", destination_url);
+      request.setDestinationInExternalFilesDir(cordova.getActivity().getApplicationContext(), destination_url, filename);
       request.setNotificationVisibility(android.app.DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED); 
       // VISIBILITY_VISIBLE | VISIBILITY_HIDDEN | VISIBILITY_VISIBLE_NOTIFY_COMPLETED
       long downloadReference = downloadManager.enqueue(request);
