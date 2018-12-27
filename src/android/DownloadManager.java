@@ -44,12 +44,15 @@ public class DownloadManager extends CordovaPlugin {
       int columnIndex = cursor.getColumnIndex(android.app.DownloadManager.COLUMN_STATUS);
       int status = cursor.getInt(columnIndex);
       if (status == android.app.DownloadManager.STATUS_RUNNING){
-        callbackContext.success("DOWNLOADING");
+        int bytes_downloaded = cursor.getInt(cursor.getColumnIndex(android.app.DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR));
+        int bytes_total = cursor.getInt(cursor.getColumnIndex(android.app.DownloadManager.COLUMN_TOTAL_SIZE_BYTES));
+        final int dl_progress = (int) ((bytes_downloaded * 100l) / bytes_total);
+        callbackContext.success("{\"status\": \"DOWNLOADING\", \"progress\": \""+Integer.toString(dl_progress)+"\"}");
       } else {
-        callbackContext.success("NOT DOWNLOADING: " + Integer.toString(status));
+        callbackContext.success("{\"status\": \"NOT DOWNLOADING\"}");
       }
     }else{
-      callbackContext.success("NOT DOWNLOADING: NOT FOUND");
+      callbackContext.success("{\"status\": \"NOT DOWNLOADING\"}");
     }
   }
 
@@ -62,11 +65,8 @@ public class DownloadManager extends CordovaPlugin {
         request.setAllowedNetworkTypes(android.app.DownloadManager.Request.NETWORK_WIFI | android.app.DownloadManager.Request.NETWORK_MOBILE);
         request.setAllowedOverRoaming(false);
         request.setTitle(title);
-        // request.setDescription(title);
         request.setDestinationUri(Uri.fromFile(new File(destination_url))); //Uri.parse(destination_url)
-        // Environment.getExternalStoragePublicDirectory()
-        // request.setDestinationInExternalFilesDir(cordova.getActivity().getApplicationContext(), null, destination_url);
-        request.setNotificationVisibility(android.app.DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED); 
+        request.setNotificationVisibility(android.app.DownloadManager.Request.VISIBILITY_VISIBLE); 
         // VISIBILITY_VISIBLE | VISIBILITY_HIDDEN | VISIBILITY_VISIBLE_NOTIFY_COMPLETED
         long downloadReference = downloadManager.enqueue(request);
         callbackContext.success(Long.toString(downloadReference));
